@@ -102,7 +102,7 @@ wmap_bg_df <- fortify(wmap_bg, region = "ISO3")
 
 ### animate the data
 
-```{r, warning= F}
+```{r,  warning = F, message = F}
 p1 <- ggplot() +
   geom_polygon(data = wmap_bg_df,
                aes(x = long,
@@ -142,8 +142,8 @@ p1 <- ggplot() +
 
 
 
-```{r, warning= F}
-animate(p1, 500, fps = 15, width = 1200, height = 800)
+```{r, warning = F, message = F}
+animate(p1, 500, fps = 15, width = 1200, height = 800, end_pause = 45)
 ```
 
 
@@ -167,7 +167,7 @@ wmap_df$break_points <- cut(wmap_df$case_per_million,
 
 Now only a few things need to changed in the code to plot it with cases per 1,000,000 inhabitants
 
-```{r}
+```{r, warning = F, message = F}
 p2 <- ggplot() +
   geom_polygon(data = wmap_bg_df,
                aes(x = long,
@@ -209,8 +209,8 @@ p2 <- ggplot() +
 ```
 
 
-```{r, warning= F}
-animate(p2, 500, fps = 15, width = 1200, height = 800)
+```{r, warning = F, message = F}
+animate(p2, 500, fps = 15, width = 1200, height = 800, end_pause = 45)
 ```
 
 
