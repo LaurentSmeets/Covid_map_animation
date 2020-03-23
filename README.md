@@ -1,12 +1,4 @@
-# Covid_map_animation
----
-title: "Covid-19 Map Animation"
-author: "Laurent Smeets"
-date: "23-3-2020"
-output:
-  html_document:
-    keep_md: yes
----
+# Covid map animation using gganimate
 
 
 This file will show you how the create an animated choropleth map showing the spreading of the 2020 Covid-19 outbreak. It uses the most up-to-date data from Johns Hopkins University and the `gganimate` package to animate the data.
