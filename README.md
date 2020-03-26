@@ -1,6 +1,7 @@
 # Covid map animation using gganimate
 
 
+
 This file will show you how the create an animated choropleth map showing the spreading of the 2020 Covid-19 outbreak. It uses the most up-to-date data from Johns Hopkins University and the `gganimate` package to animate the data.
 
 
@@ -36,9 +37,9 @@ First we scrape the data on the number of cases per day per country from the  Jo
 
 
 ```r
-url <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+url <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 
-dat <- read_csv(file = url) 
+dat <- read_csv(file = url)
 ```
 
 ```
@@ -78,24 +79,24 @@ dat_long_format <- dat %>%
   arrange(Country, date) %>% # arrange  by date
   mutate(Country_code = countrycode(Country,  #go from country to country code
                                     origin = "country.name",
-                                    destination = "iso3c")) %>% 
+                                    destination = "iso3c")) %>%
   mutate(Country_code = ifelse(Country == "Kosovo", "RKS", Country_code)) %>%
-  filter(Country != "Cruise Ship") %>% # remove cruiseship caes
+  filter(Country != "Diamond Princess") %>% # remove cruiseship caes
   left_join(pop_data,
             by = c("Country_code" = "iso3c")) %>% # Join WB data
   mutate(case_per_million = (n_cases /  value) * 1000000) %>% # calc cases per mil
   group_by(Country) %>%
-  mutate(n_cases = ifelse(n_cases == 0, 
+  mutate(n_cases = ifelse(n_cases == 0,
                           NA,
                           n_cases)) %>%
   mutate(case_per_million = ifelse(case_per_million == 0,
-                                   NA, 
+                                   NA,
                                    case_per_million)) %>%
   ungroup()
 ```
 
 ```
-## Warning in countrycode(Country, origin = "country.name", destination = "iso3c"): Some values were not matched unambiguously: Cruise Ship, Kosovo
+## Warning in countrycode(Country, origin = "country.name", destination = "iso3c"): Some values were not matched unambiguously: Diamond Princess
 ```
 
 ### Get map data
@@ -107,8 +108,8 @@ I use the `rworldmap` package to load in a polygon from all countries and then `
 wmap <- getMap()
 wmap <- spTransform(wmap, CRS("+proj=longlat")) # reproject
 wmap_df <- fortify(wmap, region = "ISO3") %>%
-  left_join(dat_long_format, 
-            by = c('id' = 'Country_code')) 
+  left_join(dat_long_format,
+            by = c('id' = 'Country_code'))
 ```
 
 Because some countries do not have any cases, but we do want them to be part of the map, we load the same map again, as background
@@ -131,7 +132,7 @@ p1 <- ggplot() +
                    y = lat,
                    group = group),
                col = "white",
-               fill = "lightgrey") + 
+               fill = "lightgrey") +
   geom_polygon(data = filter(wmap_df, !is.na(Country)),
                aes(x = long,
                    y = lat,
@@ -140,15 +141,15 @@ p1 <- ggplot() +
                col = "white") +
   transition_time(date) +
   ease_aes('linear') +
-  labs(title="{format(frame_time, '%Y-%b-%d')}", 
-       x = NULL, 
+  labs(title="{format(frame_time, '%Y-%b-%d')}",
+       x = NULL,
        y = NULL)  +
   theme_fivethirtyeight(14,"Avenir")+
   theme(axis.text =  element_blank()) +
     scale_fill_viridis(
       na.value = "lightgrey",
       labels = scales::comma,
-      option = "magma", 
+      option = "magma",
       direction = -1,
       name = "Number of confirmed Covid-19 cases",
       guide = guide_colorbar(
@@ -166,7 +167,7 @@ p1 <- ggplot() +
 
 
 ```r
-animate(p1, 500, fps = 15, width = 1200, height = 800)
+animate(p1, 500, fps = 15, width = 1200, height = 800, end_pause = 45)
 ```
 
 ![](code_files/figure-html/unnamed-chunk-9-1.gif)<!-- -->
@@ -174,7 +175,7 @@ animate(p1, 500, fps = 15, width = 1200, height = 800)
 
 ### N cases per 1,000,000 inhabitants
 
-It makes more sense to plot the number of cases as a percentage or as share of 1,000,000 inhabitants (using World Bank data), because large countries will have a larger number of absolute cases. It also makes sense to make  discrete scale instead of just continuous scale for this plot. Otherwise, certain small countries, with few cases (but as share of the population high number of cases), would be on the extreme end of the scale and other countries would be hard to distinguish. 
+It makes more sense to plot the number of cases as a percentage or as share of 1,000,000 inhabitants (using World Bank data), because large countries will have a larger number of absolute cases. It also makes sense to make  discrete scale instead of just continuous scale for this plot. Otherwise, certain small countries, with few cases (but as share of the population high number of cases), would be on the extreme end of the scale and other countries would be hard to distinguish.
 
 
 #### Manual breaks
@@ -201,7 +202,7 @@ p2 <- ggplot() +
                    y = lat,
                    group = group),
                col = "white",
-               fill = "lightgrey") + 
+               fill = "lightgrey") +
   geom_polygon(data = filter(wmap_df, !is.na(Country)),
                aes(x = long,
                    y = lat,
@@ -210,8 +211,8 @@ p2 <- ggplot() +
                col = "white") +
   transition_time(date) +
   ease_aes('linear') +
-  labs(title="{format(frame_time, '%Y-%b-%d')}", 
-       x = NULL, 
+  labs(title="{format(frame_time, '%Y-%b-%d')}",
+       x = NULL,
        y = NULL)  +
   theme_fivethirtyeight(14,"Avenir")+
   theme(axis.text =  element_blank())  +
@@ -238,9 +239,7 @@ p2 <- ggplot() +
 
 
 ```r
-animate(p2, 500, fps = 15, width = 1200, height = 800)
+animate(p2, 500, fps = 15, width = 1200, height = 800, end_pause = 45)
 ```
 
 ![](code_files/figure-html/unnamed-chunk-12-1.gif)<!-- -->
-
-

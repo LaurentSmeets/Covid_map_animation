@@ -43,7 +43,7 @@ First we scrape the data on the number of cases per day per country from the  Jo
 
 
 ```r
-url <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+url <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 
 dat <- read_csv(file = url) 
 ```
@@ -87,7 +87,7 @@ dat_long_format <- dat %>%
                                     origin = "country.name",
                                     destination = "iso3c")) %>% 
   mutate(Country_code = ifelse(Country == "Kosovo", "RKS", Country_code)) %>%
-  filter(Country != "Cruise Ship") %>% # remove cruiseship caes
+  filter(Country != "Diamond Princess") %>% # remove cruiseship caes
   left_join(pop_data,
             by = c("Country_code" = "iso3c")) %>% # Join WB data
   mutate(case_per_million = (n_cases /  value) * 1000000) %>% # calc cases per mil
@@ -102,7 +102,7 @@ dat_long_format <- dat %>%
 ```
 
 ```
-## Warning in countrycode(Country, origin = "country.name", destination = "iso3c"): Some values were not matched unambiguously: Cruise Ship, Kosovo
+## Warning in countrycode(Country, origin = "country.name", destination = "iso3c"): Some values were not matched unambiguously: Diamond Princess
 ```
 
 ### Get map data
@@ -173,7 +173,7 @@ p1 <- ggplot() +
 
 
 ```r
-animate(p1, 500, fps = 15, width = 1200, height = 800)
+animate(p1, 500, fps = 15, width = 1200, height = 800, end_pause = 45)
 ```
 
 ![](code_files/figure-html/unnamed-chunk-9-1.gif)<!-- -->
@@ -245,7 +245,7 @@ p2 <- ggplot() +
 
 
 ```r
-animate(p2, 500, fps = 15, width = 1200, height = 800)
+animate(p2, 500, fps = 15, width = 1200, height = 800, end_pause = 45)
 ```
 
 ![](code_files/figure-html/unnamed-chunk-12-1.gif)<!-- -->
